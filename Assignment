@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NAME 100
+
+// Define student structure
+typedef struct {
+    char name[MAX_NAME];
+    int rollNo;
+    float gpa;
+} Student;
+
+// Function prototypes
+void addStudents(Student* students, int n);
+void displayStudents(Student* students, int n);
+void updateGPA(Student* students, int n, int rollNo);
+void sortByGPA(Student* students, int n);
+
+int main() {
+    int n;
+    printf("Enter number of students: ");
+    scanf("%d", &n);
+
+    // Dynamically allocate memory for student records
+    Student* students = (Student*)malloc(n * sizeof(Student));
+    if (students == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    // Input student data
+    addStudents(students, n);
+
+    // Display student records
+    printf("\nStudent Records:\n");
+    displayStudents(students, n);
+
+    // Update GPA
+    int roll;
+    printf("\nEnter roll number to update GPA: ");
+    scanf("%d", &roll);
+    updateGPA(students, n, roll);
+
+    // Display updated records
+    printf("\nUpdated Records:\n");
+    displayStudents(students, n);
+
+    // Bonus: Sort by GPA
+    sortByGPA(students, n);
+    printf("\nRecords Sorted by GPA (Descending):\n");
+    displayStudents(students, n);
+
+    // Free allocated memory
+    free(students);
+    return 0;
+}
+
+void addStudents(Student* students, int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter data for student %d:\n", i + 1);
+        printf("Name: ");
+        getchar(); // clear newline from buffer
+        fgets(students[i].name, MAX_NAME, stdin);
+        students[i].name[strcspn(students[i].name, "\n")] = '\0'; // remove newline
+        printf("Roll No: ");
+        scanf("%d", &students[i].rollNo);
+        printf("GPA: ");
+        scanf("%f", &students[i].gpa);
+    }
+}
+
+void displayStudents(Student* students, int n) {
+    for (int i = 0; i < n; i++) {
+        printf("Name: %s, Roll No: %d, GPA: %.2f\n",
+               students[i].name, students[i].rollNo, students[i].gpa);
+    }
+}
+
+void updateGPA(Student* students, int n, int rollNo) {
+    for (int i = 0; i < n; i++) {
+        if (students[i].rollNo == rollNo) {
+            printf("Enter new GPA: ");
+            scanf("%f", &students[i].gpa);
+            return;
+        }
+    }
+    printf("Roll number not found.\n");
+}
+
+void sortByGPA(Student* students, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (students[j].gpa > students[i].gpa) {
+                Student temp = students[i];
+                students[i] = students[j];
+                students[j] = temp;
+            }
+        }
+    }
+}
